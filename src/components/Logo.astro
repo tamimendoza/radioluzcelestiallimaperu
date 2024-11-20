@@ -1,0 +1,28 @@
+<div class="relative h-48">
+  <div class="absolute inset-0 animated-clouds"></div>
+  <div class="relative flex justify-center items-center">
+    <img
+      src="/logo.jpg"
+      alt="Radio Logo"
+      class="pt-3 w-40 rounded-full shadow-lg"
+    />
+  </div>
+</div>
+
+<style>
+  @keyframes slideBackground {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 100% 0;
+    }
+  }
+
+  .animated-clouds {
+    background-image: url("/cloud.jpeg");
+    background-repeat: repeat-x;
+    background-size: auto 600px;
+    animation: slideBackground 60s linear infinite;
+  }
+</style>

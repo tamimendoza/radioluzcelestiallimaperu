@@ -1,0 +1,28 @@
+---
+import type { Value } from "@libsql/client";
+import { turso } from "../turso.ts";
+
+const { rows } = await turso.execute(
+  "SELECT codigo, valor FROM configuracion WHERE codigo IN ('PLAYS', 'TELEF')",
+);
+
+let src_reproductor: Value = "";
+let src_telefono: Value = "";
+for (const row of rows) {
+  if (row.codigo == "PLAYS") {
+    src_reproductor = row.valor;
+  }
+  if (row.codigo == "TELEF") {
+    src_telefono = row.valor;
+  }
+}
+---
+
+<section class="container mx-auto flex justify-center">
+  <p>Fono Radio: {src_telefono?.toString()}</p>
+</section>
+<section class="container mx-auto flex justify-center">
+  <audio autoplay controls src={src_reproductor?.toString()}>
+    Tu navegador no soporta el elemento <code>audio</code>
+  </audio>
+</section>
