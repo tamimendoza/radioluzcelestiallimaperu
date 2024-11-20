@@ -1,0 +1,33 @@
+---
+import Footer from "@src/components/Footer.astro";
+import Menu from "@src/components/Menu.astro";
+import Layout from "@src/layouts/Layout.astro";
+---
+
+<Layout title="Radio Luz Celestial">
+  <Menu />
+  <main class="mt-6 container mx-auto">
+    <h1 class="text-2xl text-center font-bold">Radio Luz Celestial</h1>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div class="bg-blue-200 p-4">
+        <p class="text-center">Visión</p>
+        <p>
+          La Visión de la Radio es llegar a todo el mundo con la Palabra de
+          Dios.
+        </p>
+      </div>
+      <div class="bg-green-200 p-4">
+        <p class="text-center">Misión</p>
+        <p>
+          Ser una plataforma por la cual se anuncie la poderosa Palabra de Dios
+          que transforma la vida y el corazón de las personas
+        </p>
+      </div>
+    </div>
+    <div class="bg-yellow-200 pt-4 mt-4">
+      <p class="text-center">Doctrina</p>
+      <p>...</p>
+    </div>
+  </main>
+  <Footer />
+</Layout>
