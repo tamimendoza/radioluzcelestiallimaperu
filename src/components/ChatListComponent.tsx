@@ -1,6 +1,8 @@
 import type Mensaje from "@src/interfaces/Mensaje"
 import { useEffect, useRef, useState } from "react"
 import pusherJs, { Channel } from 'pusher-js'
+import moment from 'moment/min/moment-with-locales'
+import 'moment/locale/es'
 
 const PUSHER_APP_KEY = import.meta.env.PUBLIC_PUSHER_KEY
 const PUSHER_CLUSTER = import.meta.env.PUBLIC_PUSHER_CLUSTER
@@ -54,7 +56,7 @@ export default function ChatListComponent() {
               <li key={index} className="border-solid px-2">
                 <small className="font-bold">{mensaje.nombre}: </small>
                 <small>{mensaje.mensaje}</small>
-                <small className="text-gray-500 float-right">{mensaje.fecha.toString()}</small>
+                <small className="text-gray-500 float-right">{moment(mensaje.fecha.toString()).locale('es').fromNow()}</small>
               </li>
             ))}
           </ul>
