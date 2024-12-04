@@ -2,31 +2,47 @@
 import Footer from "@src/components/Footer.astro";
 import Menu from "@src/components/Menu.astro";
 import Layout from "@src/layouts/Layout.astro";
+import { turso } from "@src/turso";
+
+const { rows } = await turso.execute(
+  "SELECT codigo, valor FROM configuracion WHERE codigo IN ('MISIN', 'VISIN', 'DOCTN')",
+);
+let vision = "";
+let mision = "";
+let doctrina = "";
+
+for (const row of rows) {
+  if (row.valor != undefined) {
+    if (row.codigo == "MISIN") {
+      mision = row.valor.toString();
+    }
+    if (row.codigo == "VISIN") {
+      vision = row.valor.toString();
+    }
+    if (row.codigo == "DOCTN") {
+      doctrina = row.valor.toString();
+    }
+  }
+}
 ---
 
 <Layout title="Radio Luz Celestial">
   <Menu />
-  <main class="mt-6 container mx-auto">
-    <h1 class="text-2xl text-center font-bold">Radio Luz Celestial</h1>
+  <main class="mt-6 container mx-auto gap-4">
+    <h1 class="text-2xl text-center font-bold mb-4">Radio Luz Celestial</h1>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div class="bg-blue-200 p-4">
+      <div class="p-4 border-gray-200 border-2">
         <p class="text-center">Visión</p>
-        <p>
-          La Visión de la Radio es llegar a todo el mundo con la Palabra de
-          Dios.
-        </p>
+        <p>{vision}</p>
       </div>
-      <div class="bg-green-200 p-4">
+      <div class="p-4 border-gray-200 border-2">
         <p class="text-center">Misión</p>
-        <p>
-          Ser una plataforma por la cual se anuncie la poderosa Palabra de Dios
-          que transforma la vida y el corazón de las personas
-        </p>
+        <p>{mision}</p>
       </div>
     </div>
-    <div class="bg-yellow-200 pt-4 mt-4">
+    <div class="p-4 mt-4 gap-4 border-gray-200 border-2">
       <p class="text-center">Doctrina</p>
-      <p>...</p>
+      <p>{doctrina}</p>
     </div>
   </main>
   <Footer />

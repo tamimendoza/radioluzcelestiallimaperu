@@ -1,0 +1,36 @@
+---
+import Footer from "@src/components/Footer.astro";
+import Menu from "@src/components/Menu.astro";
+import Layout from "@src/layouts/Layout.astro";
+import { turso } from "@src/turso";
+import moment from "moment";
+
+const { id } = Astro.params;
+
+if (id == undefined) return;
+
+const { rows } = await turso.execute({
+  sql: "SELECT * FROM noticia WHERE id = ? LIMIT 1",
+  args: [id.toString()],
+});
+
+const row = rows[0];
+---
+
+<Layout title="Radio Luz Celestial">
+  <Menu />
+  <main class="container mx-auto grid grid-cols-1">
+    <section class="p-4 w-full">
+      <img src={row.imagen} class="h-80 object-cover float-left mr-4" />
+      <h3 class="font-bold text-lg">{row.titulo?.toString()}</h3>
+      <p class="mb-4">{row.contenido}</p>
+          <p class="mb-4">
+            <span class="font-bold">Fecha: </span>
+            {moment(row.fecha?.toString())
+              .locale("es")
+              .format("DD [de] MMMM [de] YYYY, h:mm:ss a")}
+          </p>
+    </section>
+  </main>
+  <Footer />
+</Layout>
