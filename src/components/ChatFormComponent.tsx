@@ -1,25 +1,35 @@
-import { useRef, type SyntheticEvent } from "react";
+import { useCallback, useRef, type SyntheticEvent } from "react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 export default function ChatFormComponent() {
   const inputMensaje = useRef<HTMLTextAreaElement>(null)
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
-  const evtGuardar = async (evt: SyntheticEvent) => {
+  const handleReCaptchaVerify = useCallback(async (evt: SyntheticEvent) => {
     evt.preventDefault();
 
+    if (!executeRecaptcha) {
+      console.log('Execute recaptcha not yet available');
+      return;
+    }
+
+    const token = await executeRecaptcha('newChat');
+    // Do whatever you want with the token
     const target = evt.target as typeof evt.target & {
       nombre: { value: string };
       mensaje: { value: string };
     };
-
-    if (target.nombre.value.trim() == '' || target.mensaje.value.trim() == '') {
+    if (target.nombre.value.trim() == '' || target.mensaje.value == '') {
       return;
     }
-    await guardar(target.nombre.value, target.mensaje.value)
-    target.mensaje.value = ""
-    inputMensaje.current?.focus()
-  }
 
-  const guardar = async (nombre: string, mensaje: string) => {
+    await guardar(target.nombre.value, target.mensaje.value, token);
+
+    target.mensaje.value = "";
+    inputMensaje.current?.focus();
+  }, [executeRecaptcha]);
+
+  const guardar = async (nombre: string, mensaje: string, token: string) => {
     const response = await fetch("api/chat.guardar.json", {
       method: "POST",
       cache: "no-cache",
@@ -28,7 +38,8 @@ export default function ChatFormComponent() {
       },
       body: JSON.stringify({
         nombre,
-        mensaje
+        mensaje,
+        token
       })
     })
     if (response.ok) {
@@ -39,7 +50,7 @@ export default function ChatFormComponent() {
   return (
     <div className="mt-4 rounded-lg border-solid border-2 mx-4">
       <h2 className="mt-4 text-xl font-bold text-center">CHAT</h2>
-      <form onSubmit={evtGuardar}>
+      <form onSubmit={handleReCaptchaVerify}>
         <div className="mx-4">
           <label className="block text-base font-medium text-gray-700">Nombre</label>
           <input type="text" name="nombre" className="h-10 my-2 block w-full rounded-md border-solid border-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder:italic placeholder:text-slate-400" placeholder="Ingrese nombre" />

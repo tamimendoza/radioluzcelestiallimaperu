@@ -2,25 +2,22 @@ import { turso } from "@src/turso";
 import type { APIRoute } from "astro";
 import crypto from "node:crypto";
 
+const RECAPTCHA_SECRET = import.meta.env.RECAPTCHA_SECRET;
 const PUSHER_APP_ID = import.meta.env.PUSHER_APP_ID
 const PUSHER_KEY = import.meta.env.PUBLIC_PUSHER_KEY
 const PUSHER_SECRET = import.meta.env.PUSHER_SECRET
 const PUSHER_CLUSTER = import.meta.env.PUBLIC_PUSHER_CLUSTER
 
 export const POST: APIRoute = async ({ request }) => {
-  //FIXME: Recaptcha
-
-  if (request.headers.get("Content-Type") != "application/json") {
-    return new Response(null, { status: 400 })
-  }
-
   const body = await request.json();
   const nombre = body.nombre;
   const mensaje = body.mensaje;
+  const token = body.token;
 
-  if (!nombre || !mensaje ||
+  if (!nombre || !mensaje || !token ||
     (nombre == null || nombre == undefined || nombre.trim().length == 0) ||
-    (mensaje == null || mensaje == undefined || mensaje.trim().length == 0)
+    (mensaje == null || mensaje == undefined || mensaje.trim().length == 0) ||
+    (token == null || token == undefined || token.trim().length == 0)
   ) {
     return new Response(
       JSON.stringify({
@@ -29,6 +26,28 @@ export const POST: APIRoute = async ({ request }) => {
       { status: 400 }
     );
   }
+
+  try {
+    const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: `secret=${RECAPTCHA_SECRET}&response=${token}`,
+    });
+    const data = await response.json();
+    if (data.success == false) {
+      return new Response(null, { status: 500, statusText: "No autorizado." });
+    }
+  } catch (error) {
+    console.error(error);
+    return new Response(null, { status: 500, statusText: "Token de chat inválido" });
+  }
+
+  if (request.headers.get("Content-Type") != "application/json") {
+    return new Response(null, { status: 400 })
+  }
+
 
   try {
     await turso.execute({ sql: "INSERT INTO chat(nombre, mensaje) VALUES (?, ?)", args: [nombre, mensaje] })
