@@ -4,7 +4,7 @@ import Menu from "@src/components/Menu.astro";
 import Logo from "@src/components/Logo.astro";
 import Reproductor from "@src/components/Reproductor.astro";
 import SliderComponent from "@src/components/SliderComponent";
-import ChatFormComponent from "@src/components/ChatFormComponent";
+import ChatFormRecaptchaComponent from "@src/components/ChatFormRecaptchaComponent";
 import Facebook from "@src/components/Facebook.astro";
 import Youtube from "@src/components/Youtube.astro";
 import ChatListComponent from "@src/components/ChatListComponent";
@@ -21,7 +21,7 @@ import Footer from "@src/components/Footer.astro";
       </div>
       <section>
         <Reproductor />
-        <ChatFormComponent client:only="react" />
+        <ChatFormRecaptchaComponent client:only="react" />
       </section>
     </section>
     <section class="grid grid-cols-1 lg:grid-cols-3">
