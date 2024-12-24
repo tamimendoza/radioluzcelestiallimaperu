@@ -7,16 +7,19 @@ export default function SliderComponent() {
 
   useEffect(() => {
     loadImagenes();
+  }, []);
+
+  useEffect(() => {
     const timer = setInterval(() => {
       nextSlider();
     }, 5000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [imagenes])
 
   const nextSlider = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === imagenes.length - 1 ? 0 : prevIndex + 1,
+      prevIndex === imagenes.length - 1 ? 0 : prevIndex + 1
     );
   };
 

@@ -1,3 +1,4 @@
+export const prerender = false;
 import { turso } from "@src/turso";
 import type { APIRoute } from "astro";
 
